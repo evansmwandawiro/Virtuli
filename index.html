@@ -74,6 +74,12 @@
       overflow: hidden;
     }
 
+    @media (max-width: 768px) {
+      body.splash-active {
+        overflow: auto;
+      }
+    }
+
     body.menu-open {
       overflow: hidden;
     }
@@ -3084,6 +3090,15 @@
   </div>
 
   <script>
+    // Emergency: always remove splash-active after 5s no matter what
+    setTimeout(() => {
+      document.body.classList.remove("splash-active");
+      document.body.classList.add("site-ready");
+      const s = document.getElementById("splashScreen");
+      if (s) { s.classList.add("is-hidden"); s.setAttribute("aria-hidden","true"); }
+    }, 5000);
+
+    try {
     // ============================================================
     // PORTFOLIO - ADD YOUR IMAGES HERE
     // If you have a real image, paste the file path or URL into
@@ -3091,10 +3106,10 @@
     // stylish placeholder poster automatically.
     // ============================================================
     const portfolioItems = [
-      { title: "Night Market Launch", category: "poster", strap: "Event Poster", subtitle: "Fashion / Culture", accent: "#F0CB46", url: "" },
-      { title: "Brand Story Flyer", category: "poster", strap: "Business Flyer", subtitle: "Retail / Promo", accent: "#CCA000", url: "" },
-      { title: "Studio Social Drop", category: "poster", strap: "Social Graphic", subtitle: "Launch / Awareness", accent: "#F0CB46", url: "" },
-      { title: "Weekend Event Poster", category: "poster", strap: "Event Flyer", subtitle: "Music / Community", accent: "#CCA000", url: "" }
+      { title: "Bday Party 2025", category: "poster", strap: "Event Poster", subtitle: "Birthday / Celebration", accent: "#F0CB46", url: "images/poster-1.png" },
+      { title: "Evans Birthday Invite", category: "poster", strap: "Event Invitation", subtitle: "Birthday / Social", accent: "#CCA000", url: "images/poster-2.png" },
+      { title: "KUCCPS Webinar Flyer", category: "poster", strap: "Education Flyer", subtitle: "University / Application", accent: "#F0CB46", url: "images/poster-3.png" },
+      { title: "Top Achievers Dinner", category: "poster", strap: "Event Poster", subtitle: "Gala / Recognition", accent: "#CCA000", url: "images/poster-4.png" },
     ];
 
     const body = document.body;
@@ -3340,8 +3355,8 @@
     function updateActiveNav() {
       const scrollPosition = window.scrollY + 170;
 
-      siteHeader.classList.toggle("scrolled", window.scrollY > 80);
-      heroScroll.classList.toggle("hidden", window.scrollY > 40);
+      if (siteHeader) siteHeader.classList.toggle("scrolled", window.scrollY > 80);
+      if (heroScroll) heroScroll.classList.toggle("hidden", window.scrollY > 40);
 
       let activeId = "home";
       observedSections.forEach((section) => {
@@ -3359,7 +3374,9 @@
     window.addEventListener("scroll", updateActiveNav, { passive: true });
     updateActiveNav();
 
+    // ── HERO BACKGROUND CANVAS ──────────────────────
     const canvas = document.getElementById("heroBg");
+    if (canvas) {
     const context = canvas.getContext("2d", { alpha: true });
     let particles = [];
     let canvasWidth = 0;
@@ -3494,23 +3511,33 @@
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(resizeCanvas, 200);
     });
+    } // end if (canvas)
 
+    // ── SPLASH EXIT ─────────────────────────────────
+    // Bulletproof: called multiple ways so it ALWAYS fires
+    let splashDone = false;
     function triggerSplashExit() {
+      if (splashDone) return;
+      splashDone = true;
+      // Always unlock scroll immediately
+      body.classList.remove("splash-active");
       window.scrollTo({ top: 0, behavior: "auto" });
+      // Short delay to let the animation play
       setTimeout(() => {
-        splashScreen.classList.add("is-hidden");
-        splashScreen.setAttribute("aria-hidden", "true");
-        body.classList.remove("splash-active");
+        if (splashScreen) {
+          splashScreen.classList.add("is-hidden");
+          splashScreen.setAttribute("aria-hidden", "true");
+        }
         body.classList.add("site-ready");
-      }, 2800);
+      }, 2600);
     }
 
-    if (document.readyState === "complete") {
-      triggerSplashExit();
-    } else {
-      window.addEventListener("load", triggerSplashExit, { once: true });
-      setTimeout(triggerSplashExit, 5000);
-    }
+    // Fire after animation completes (2.6s) regardless of load state
+    setTimeout(triggerSplashExit, 100); // tiny delay to let first paint happen
+    // Also hook load event as backup
+    window.addEventListener("load", triggerSplashExit, { once: true });
+    // Hard failsafe at 4s
+    setTimeout(triggerSplashExit, 4000);
 
     const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
@@ -3631,6 +3658,15 @@
         }
       });
     }, { passive: true });
+
+    } catch(e) {
+      // If anything crashed, force the site visible
+      document.body.classList.remove("splash-active");
+      document.body.classList.add("site-ready");
+      const s = document.getElementById("splashScreen");
+      if (s) { s.classList.add("is-hidden"); s.setAttribute("aria-hidden","true"); }
+      console.warn("Virtuli script error:", e);
+    }
 
   </script>
 </body>
