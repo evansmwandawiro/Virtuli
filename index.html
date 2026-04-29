@@ -348,7 +348,7 @@
     .site-header {
       position: fixed;
       inset: 0 0 auto 0;
-      z-index: 1400;
+      z-index: 1600;
       border-bottom: 1px solid transparent;
       transition:
         background 0.35s ease,
@@ -482,7 +482,6 @@
     }
 
     .menu-toggle,
-    .menu-close,
     .lightbox-close {
       border: 0;
       background: transparent;
@@ -498,7 +497,7 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      z-index: 2;
+      z-index: 1600;
     }
 
     .menu-toggle span {
@@ -533,12 +532,10 @@
     .mobile-menu {
       position: fixed;
       inset: 0;
-      z-index: 1350;
-      background:
-        linear-gradient(135deg, rgba(0, 53, 102, 0.84), rgba(0, 8, 20, 0.98)),
-        var(--color-rich-black);
+      z-index: 1500;
+      background: #001226;
       transform: translateX(100%);
-      transition: transform 0.35s ease;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -552,22 +549,38 @@
     .mobile-menu-panel {
       width: min(420px, 100%);
       display: grid;
-      gap: 1.25rem;
+      gap: 1.5rem;
       text-align: center;
     }
 
     .mobile-menu-panel a {
       font-family: var(--font-heading);
-      font-size: clamp(1.7rem, 6vw, 2.4rem);
-      letter-spacing: 0.04em;
+      font-size: clamp(1.6rem, 6vw, 2.2rem);
+      letter-spacing: 0.06em;
+      color: var(--color-text);
+      transition: color 0.2s ease;
+      padding: 0.5rem 0;
+      display: block;
     }
 
-    .menu-close {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      font-size: 2rem;
-      line-height: 1;
+    .mobile-menu-panel a:hover {
+      color: var(--color-saffron);
+    }
+
+    .mobile-menu-panel .quote-button {
+      margin-top: 0.5rem;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .mobile-menu-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(240,203,70,0.15);
     }
 
     .hero {
@@ -1895,22 +1908,22 @@
     }
 
     @media (max-width: 768px) {
+      /* ── NAV ── */
       .navbar {
         width: calc(100% - 2rem);
       }
 
-      .brand-lockup {
-        gap: 0.55rem;
-      }
+      .brand-lockup { gap: 0.55rem; }
+      .brand-icon { width: 2.2rem; height: 2.45rem; }
+      .brand-wordmark { font-size: 0.88rem; letter-spacing: 0.18em; }
 
-      .brand-icon {
-        width: 2.2rem;
-        height: 2.45rem;
-      }
+      /* ── HERO ── */
+      /* Hide ALL floating design panels on mobile — they crowd the content */
+      .hero-floats { display: none; }
 
-      .brand-wordmark {
-        font-size: 0.92rem;
-        letter-spacing: 0.22em;
+      .hero-content {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
       }
 
       .hero-actions {
@@ -1922,10 +1935,17 @@
       .hero-button {
         width: 100%;
         padding: 1rem 1.6rem;
-        font-size: 1.05rem;
+        font-size: 1rem;
         justify-content: center;
+        text-align: center;
       }
 
+      /* ── SPLASH ── */
+      .splash-logo { width: clamp(120px, 42vw, 180px); }
+      .splash-wordmark-svg { width: clamp(220px, 70vw, 340px); }
+      .splash-tagline { font-size: 1.1rem; }
+
+      /* ── GRIDS ── */
       .trust-grid,
       .stats-row,
       .portfolio-grid {
@@ -1937,37 +1957,19 @@
       .process-card,
       .testimonial-card,
       .contact-card {
-        padding: 1.6rem;
+        padding: 1.5rem;
       }
 
-      .contact-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-      }
+      /* ── CONTACT ── */
+      .contact-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .contact-card { min-height: 80px; gap: 1.2rem; padding: 1.4rem; }
+      .contact-card-icon { width: 3rem; height: 3rem; flex-shrink: 0; }
 
-      .contact-card {
-        min-height: 80px;
-        gap: 1.2rem;
-        padding: 1.5rem 1.4rem;
-      }
+      /* ── FOOTER ── */
+      .footer-main { grid-template-columns: 1fr; padding: 2rem 0; gap: 2rem; }
+      .social-link { width: 3.2rem; height: 3.2rem; }
 
-      .contact-card-icon {
-        width: 3rem;
-        height: 3rem;
-        flex-shrink: 0;
-      }
-
-      .footer-main {
-        grid-template-columns: 1fr;
-        padding: 2rem 0;
-        gap: 2rem;
-      }
-
-      .social-link {
-        width: 3.4rem;
-        height: 3.4rem;
-      }
-
+      /* ── ABOUT ── */
       .about-layout {
         grid-template-columns: 1fr;
         border-left: none;
@@ -1975,14 +1977,16 @@
         padding: 1.5rem 1.25rem;
         gap: 2rem;
       }
+      .about-quote { min-height: 180px; }
 
-      .about-quote {
-        min-height: 200px;
-      }
+      /* ── PROCESS ── */
+      .step-number { font-size: clamp(2.5rem, 10vw, 4rem); }
 
-      .step-number {
-        font-size: clamp(2.5rem, 10vw, 4rem);
-      }
+      /* ── TESTIMONIALS ── */
+      .testimonials-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+
+      /* ── TOUCH ── */
+      a, button { touch-action: manipulation; }
     }
 
     @media (max-width: 480px) {
@@ -2553,8 +2557,15 @@
     </header>
 
     <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
-      <button class="menu-close" id="menuClose" aria-label="Close menu">&times;</button>
       <div class="mobile-menu-panel">
+        <div class="mobile-menu-logo">
+          <svg viewBox="0 0 72 80" width="40" height="44" aria-hidden="true">
+            <polygon points="36,4 68,22 36,40 4,22" fill="#F0CB46"></polygon>
+            <polygon points="4,22 36,40 36,76 4,58" fill="#F7F0DB"></polygon>
+            <polygon points="68,22 36,40 36,76 68,58" fill="#001D3D"></polygon>
+          </svg>
+          <span style="font-family:var(--font-heading);color:var(--color-saffron);font-size:1rem;letter-spacing:0.2em">VIRTULI</span>
+        </div>
         <a href="#home" data-menu-link>Home</a>
         <a href="#about" data-menu-link>About</a>
         <a href="#services" data-menu-link>Services</a>
@@ -3080,17 +3091,16 @@
     // stylish placeholder poster automatically.
     // ============================================================
     const portfolioItems = [
-  { title: "Bday Party 2025", category: "poster", strap: "Event Poster", subtitle: "Birthday / Celebration", accent: "#F0CB46", url: "images/poster-1.png" },
-  { title: "Evans Birthday Invite", category: "poster", strap: "Event Invitation", subtitle: "Birthday / Social", accent: "#CCA000", url: "images/poster-2.png" },
-  { title: "KUCCPS Webinar Flyer", category: "poster", strap: "Education Flyer", subtitle: "University / Application", accent: "#F0CB46", url: "images/poster-3.png" },
-  { title: "Top Achievers Dinner", category: "poster", strap: "Event Poster", subtitle: "Gala / Recognition", accent: "#CCA000", url: "images/poster-4.png" },
-];
+      { title: "Night Market Launch", category: "poster", strap: "Event Poster", subtitle: "Fashion / Culture", accent: "#F0CB46", url: "" },
+      { title: "Brand Story Flyer", category: "poster", strap: "Business Flyer", subtitle: "Retail / Promo", accent: "#CCA000", url: "" },
+      { title: "Studio Social Drop", category: "poster", strap: "Social Graphic", subtitle: "Launch / Awareness", accent: "#F0CB46", url: "" },
+      { title: "Weekend Event Poster", category: "poster", strap: "Event Flyer", subtitle: "Music / Community", accent: "#CCA000", url: "" }
+    ];
 
     const body = document.body;
     const siteHeader = document.getElementById("siteHeader");
     const heroScroll = document.getElementById("heroScroll");
     const menuToggle = document.getElementById("menuToggle");
-    const menuClose = document.getElementById("menuClose");
     const mobileMenu = document.getElementById("mobileMenu");
     const splashScreen = document.getElementById("splashScreen");
     const portfolioGrid = document.getElementById("portfolioGrid");
@@ -3176,10 +3186,6 @@
         const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
         setMenuState(!isOpen);
       });
-    }
-
-    if (menuClose) {
-      menuClose.addEventListener("click", () => setMenuState(false));
     }
 
     document.querySelectorAll("[data-menu-link]").forEach((link) => {
