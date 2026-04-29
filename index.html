@@ -14,6 +14,8 @@
     href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500;1,600&family=DM+Sans:wght@400;500;700&display=swap"
     rel="stylesheet"
   >
+  <!-- Preload Cinzel so splash wordmark renders in the correct font immediately -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap">
   <style>
     :root {
       --color-rich-black: #000814;
@@ -251,74 +253,65 @@
 
 
     .splash-logo {
-      width: clamp(180px, 26vw, 240px);
+      width: clamp(140px, 38vw, 240px);
       height: auto;
       overflow: visible;
-      will-change: transform, opacity;
     }
 
-    /* TOP FACE: drops from directly above */
+    /* Use simpler animations that work reliably on iOS Safari */
     .splash-logo .face-top {
-      animation: cubeTop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
-      will-change: transform, opacity;
+      animation: cubeTop 0.6s cubic-bezier(0.34, 1.3, 0.64, 1) 0.2s both;
     }
 
-    /* LEFT FACE: slides in from lower-left */
     .splash-logo .face-left {
-      animation: cubeLeft 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.52s both;
-      will-change: transform, opacity;
+      animation: cubeLeft 0.6s cubic-bezier(0.34, 1.3, 0.64, 1) 0.5s both;
     }
 
-    /* RIGHT FACE: slides in from lower-right */
     .splash-logo .face-right {
-      animation: cubeRight 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.68s both;
-      will-change: transform, opacity;
+      animation: cubeRight 0.6s cubic-bezier(0.34, 1.3, 0.64, 1) 0.68s both;
     }
 
-    /* DETAILS: fade in last */
     .splash-logo .face-details {
-      animation: cubeDetails 0.4s ease 1.0s both;
+      animation: cubeDetails 0.45s ease 1.0s both;
     }
 
     @keyframes cubeTop {
-      from { opacity: 0; transform: translateY(-56px); }
-      to   { opacity: 1; transform: translateY(0); }
+      0%   { opacity: 0; transform: translateY(-50px); }
+      100% { opacity: 1; transform: translateY(0px);   }
     }
 
     @keyframes cubeLeft {
-      from { opacity: 0; transform: translate(-44px, 26px); }
-      to   { opacity: 1; transform: translate(0, 0); }
+      0%   { opacity: 0; transform: translate(-40px, 22px); }
+      100% { opacity: 1; transform: translate(0px, 0px);    }
     }
 
     @keyframes cubeRight {
-      from { opacity: 0; transform: translate(44px, 26px); }
-      to   { opacity: 1; transform: translate(0, 0); }
+      0%   { opacity: 0; transform: translate(40px, 22px); }
+      100% { opacity: 1; transform: translate(0px, 0px);   }
     }
 
     @keyframes cubeDetails {
-      from { opacity: 0; }
-      to   { opacity: 1; }
+      0%   { opacity: 0; }
+      100% { opacity: 1; }
     }
 
-    /* Gold pulse on the assembled logo */
     .splash-logo-wrap {
-      filter: drop-shadow(0 0 0px rgba(240, 203, 70, 0));
       animation: logoGlow 2.2s ease-in-out 1.3s infinite;
     }
 
     @keyframes logoGlow {
       0%, 100% { filter: drop-shadow(0 2px 12px rgba(240, 203, 70, 0.0)); }
+      50%       { filter: drop-shadow(0 2px 28px rgba(240, 203, 70, 0.5)); }
+    }
       50%       { filter: drop-shadow(0 2px 28px rgba(240, 203, 70, 0.45)); }
     }
 
     /* Wordmark and tagline enter after assembly */
-    .splash-wordmark {
-      font-family: var(--font-heading);
-      font-size: clamp(2.2rem, 7vw, 4rem);
-      letter-spacing: 0.28em;
-      color: var(--color-saffron);
-      text-shadow: 0 0 24px rgba(240, 203, 70, 0.12);
+    .splash-wordmark-svg {
+      width: clamp(260px, 55vw, 420px);
+      height: auto;
       animation: splashTextIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.05s both;
+      overflow: visible;
     }
 
     .splash-tagline {
@@ -616,12 +609,328 @@
       z-index: 0;
     }
 
-    #heroParticles {
+    #heroBg {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       z-index: 0;
+    }
+
+    .hero-floats {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .hf-el {
+      position: absolute;
+      border-radius: 12px;
+      opacity: 0;
+      animation: hfFadeIn 1s ease forwards;
+    }
+
+    @keyframes hfFadeIn {
+      from { opacity: 0; transform: translateY(22px) scale(0.95); }
+      to   { opacity: 0.72; transform: translateY(0) scale(1); }
+    }
+
+    /* ── 3D POSTER ── */
+    .hf-poster {
+      width: clamp(90px, 11vw, 150px);
+      right: clamp(1%, 3vw, 5%);
+      top: 50%;
+      transform: translateY(-50%);
+      animation-delay: 1.4s;
+      perspective: 600px;
+    }
+
+    .hf-poster-inner {
+      background: linear-gradient(160deg, #0a2540 0%, #001226 100%);
+      border: 1px solid rgba(240,203,70,0.25);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+      transform: perspective(600px) rotateY(-18deg) rotateX(4deg);
+      animation: posterTilt 6s ease-in-out 1.4s infinite;
+    }
+
+    @keyframes posterTilt {
+      0%,100% { transform: perspective(600px) rotateY(-18deg) rotateX(4deg) translateY(-50%);  }
+      50%      { transform: perspective(600px) rotateY(-10deg) rotateX(2deg) translateY(-50%); }
+    }
+
+    .hf-poster-header {
+      height: 28px;
+      background: linear-gradient(135deg, rgba(240,203,70,0.55), rgba(204,160,0,0.3));
+      border-bottom: 1px solid rgba(240,203,70,0.2);
+    }
+
+    .hf-poster-img {
+      height: clamp(55px, 8vw, 100px);
+      background: linear-gradient(180deg, rgba(0,53,102,0.8) 0%, rgba(0,18,38,0.9) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hf-poster-img::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent 0px,
+        transparent 8px,
+        rgba(240,203,70,0.04) 8px,
+        rgba(240,203,70,0.04) 9px
+      );
+    }
+
+    .hf-poster-lines {
+      padding: 10px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .hf-pl {
+      height: 5px;
+      border-radius: 3px;
+      background: rgba(247,240,219,0.15);
+      width: 90%;
+    }
+    .hf-pl--short { width: 60%; }
+    .hf-pl--gold  { width: 40%; background: rgba(240,203,70,0.45); margin-top: 3px; }
+
+    .hf-poster-badge {
+      margin: 0 10px 10px;
+      background: rgba(240,203,70,0.15);
+      border: 1px solid rgba(240,203,70,0.3);
+      border-radius: 4px;
+      font-size: 7px;
+      font-family: var(--font-heading);
+      letter-spacing: 0.18em;
+      color: var(--color-saffron);
+      text-align: center;
+      padding: 3px 0;
+    }
+
+    /* ── WEBSITE MOCKUP ── */
+    .hf-site {
+      width: clamp(140px, 18vw, 230px);
+      right: clamp(2%, 16vw, 21%);
+      top: 8%;
+      animation-delay: 1.8s;
+      background: rgba(0,10,24,0.9);
+      border: 1px solid rgba(240,203,70,0.15);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+      transform: perspective(800px) rotateY(-8deg);
+      animation: hfFadeIn 1s ease 1.8s both, siteTilt 8s ease-in-out 1.8s infinite;
+    }
+
+    @keyframes siteTilt {
+      0%,100% { transform: perspective(800px) rotateY(-8deg) translateY(0px); }
+      50%      { transform: perspective(800px) rotateY(-4deg) translateY(-8px); }
+    }
+
+    .hf-site-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 7px 10px;
+      background: rgba(0,8,20,0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px 12px 0 0;
+    }
+
+    .hf-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    .hf-url {
+      flex: 1;
+      margin-left: 6px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 3px;
+      padding: 2px 7px;
+      font-size: 8px;
+      color: rgba(247,240,219,0.5);
+      font-family: var(--font-body);
+    }
+
+    .hf-site-body { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+
+    .hf-site-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .hf-snav-dot {
+      width: 14px; height: 14px;
+      border-radius: 3px;
+      background: rgba(240,203,70,0.5);
+      flex-shrink: 0;
+    }
+
+    .hf-snav-links { display: flex; gap: 5px; flex: 1; justify-content: flex-end; }
+
+    .hf-snl {
+      height: 5px;
+      width: 22px;
+      border-radius: 3px;
+      background: rgba(247,240,219,0.15);
+    }
+    .hf-snl--gold { background: rgba(240,203,70,0.5); }
+
+    .hf-site-hero {
+      background: linear-gradient(135deg, rgba(0,29,61,0.8), rgba(0,10,24,0.9));
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .hf-sh-title {
+      height: 10px;
+      width: 75%;
+      border-radius: 3px;
+      background: rgba(240,203,70,0.4);
+      animation: shimBar 2.5s ease-in-out infinite;
+    }
+
+    .hf-sh-sub {
+      height: 6px;
+      width: 55%;
+      border-radius: 3px;
+      background: rgba(247,240,219,0.18);
+      animation: shimBar 2.5s ease-in-out 0.4s infinite;
+    }
+
+    .hf-sh-btn {
+      height: 14px;
+      width: 36%;
+      border-radius: 4px;
+      background: rgba(240,203,70,0.6);
+      margin-top: 4px;
+    }
+
+    .hf-site-cards { display: flex; gap: 5px; }
+
+    .hf-sc {
+      flex: 1;
+      height: 28px;
+      border-radius: 5px;
+      background: rgba(0,53,102,0.5);
+      border: 1px solid rgba(240,203,70,0.08);
+      animation: shimBar 3s ease-in-out infinite;
+    }
+
+    .hf-sc:nth-child(2) { animation-delay: 0.5s; }
+    .hf-sc:nth-child(3) { animation-delay: 1s; }
+
+    @keyframes shimBar {
+      0%,100% { opacity: 0.6; }
+      50%      { opacity: 1;   }
+    }
+
+    /* ── CODE SNIPPET ── */
+    .hf-code {
+      width: clamp(130px, 15vw, 190px);
+      left: clamp(2%, 3vw, 6%);
+      bottom: 14%;
+      background: rgba(0,8,20,0.9);
+      border: 1px solid rgba(240,203,70,0.14);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      animation-delay: 2.2s;
+      transform: perspective(600px) rotateY(14deg);
+      animation: hfFadeIn 1s ease 2.2s both, codeTilt 7s ease-in-out 2.2s infinite;
+    }
+
+    @keyframes codeTilt {
+      0%,100% { transform: perspective(600px) rotateY(14deg) translateY(0px); }
+      50%      { transform: perspective(600px) rotateY(8deg) translateY(-9px); }
+    }
+
+    .hf-code-header {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 10px;
+      background: rgba(0,18,38,0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px 12px 0 0;
+    }
+
+    .hf-code-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+    }
+
+    .hf-code-filename {
+      font-size: 8px;
+      color: rgba(240,203,70,0.6);
+      font-family: monospace;
+      margin-left: 4px;
+    }
+
+    .hf-code-body {
+      padding: 10px 12px;
+      font-family: monospace;
+      font-size: clamp(8px, 1vw, 9px);
+      line-height: 1.8;
+    }
+
+    .hf-line { white-space: nowrap; }
+    .hf-line--indent { padding-left: 10px; }
+    .hf-tag  { color: #f0cb46; }
+    .hf-attr { color: #9cdcfe; }
+    .hf-str  { color: #ce9178; }
+
+    .hf-cursor-blink {
+      color: var(--color-saffron);
+      font-weight: bold;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
+    /* ── PALETTE ── */
+    .hf-palette {
+      background: rgba(0,10,24,0.88);
+      border: 1px solid rgba(240,203,70,0.14);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.4);
+      padding: 10px;
+      left: clamp(2%, 4vw, 7%);
+      top: 12%;
+      width: 90px;
+      animation-delay: 2.6s;
+    }
+
+    .hf-swatch {
+      width: 100%;
+      height: 16px;
+      border-radius: 3px;
+      margin-bottom: 4px;
+    }
+
+    .hf-palette-label {
+      font-size: 7px;
+      color: rgba(247,240,219,0.4);
+      font-family: var(--font-body);
+      letter-spacing: 0.06em;
+      margin-top: 3px;
+    }
+
+    /* hide most floats on small phones */
+    @media (max-width: 600px) {
+      .hf-site, .hf-palette { display: none; }
+      .hf-poster { right: 2%; top: 50%; transform: translateY(-50%); width: 75px; }
+      .hf-code   { left: 2%; bottom: 12%; width: 110px; }
     }
 
     .hero-content {
@@ -2185,7 +2494,13 @@
           </g>
         </svg>
       </div>
-      <div class="splash-wordmark">VIRTULI</div>
+      <svg class="splash-wordmark-svg" viewBox="0 0 320 60" aria-label="VIRTULI">
+        <text x="160" y="46" text-anchor="middle"
+          font-family="Cinzel, 'Times New Roman', Georgia, serif"
+          font-size="48" font-weight="400"
+          letter-spacing="12"
+          fill="#F0CB46">VIRTULI</text>
+      </svg>
       <div class="splash-tagline">Visualize Your Ideas</div>
       <div class="splash-progress" aria-hidden="true"></div>
     </div>
@@ -2251,7 +2566,79 @@
 
     <main>
       <section class="section section-ink hero" id="home">
-        <canvas id="heroParticles" aria-hidden="true"></canvas>
+        <canvas id="heroBg" aria-hidden="true"></canvas>
+        <div class="hero-floats" aria-hidden="true">
+
+          <!-- 3D Poster mockup -->
+          <div class="hf-poster hf-el">
+            <div class="hf-poster-inner">
+              <div class="hf-poster-header"></div>
+              <div class="hf-poster-img"></div>
+              <div class="hf-poster-lines">
+                <div class="hf-pl"></div>
+                <div class="hf-pl hf-pl--short"></div>
+                <div class="hf-pl hf-pl--gold"></div>
+              </div>
+              <div class="hf-poster-badge">VIRTULI</div>
+            </div>
+          </div>
+
+          <!-- 3D Website mockup -->
+          <div class="hf-site hf-el">
+            <div class="hf-site-bar">
+              <span class="hf-dot" style="background:#ff5f57"></span>
+              <span class="hf-dot" style="background:#febc2e"></span>
+              <span class="hf-dot" style="background:#28c840"></span>
+              <div class="hf-url">virtuli.vercel.app</div>
+            </div>
+            <div class="hf-site-body">
+              <div class="hf-site-nav">
+                <div class="hf-snav-dot"></div>
+                <div class="hf-snav-links">
+                  <div class="hf-snl"></div>
+                  <div class="hf-snl"></div>
+                  <div class="hf-snl hf-snl--gold"></div>
+                </div>
+              </div>
+              <div class="hf-site-hero">
+                <div class="hf-sh-title"></div>
+                <div class="hf-sh-sub"></div>
+                <div class="hf-sh-btn"></div>
+              </div>
+              <div class="hf-site-cards">
+                <div class="hf-sc"></div>
+                <div class="hf-sc"></div>
+                <div class="hf-sc"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Code snippet -->
+          <div class="hf-code hf-el">
+            <div class="hf-code-header">
+              <span class="hf-code-dot"></span>
+              <span class="hf-code-dot"></span>
+              <span class="hf-code-filename">style.css</span>
+            </div>
+            <div class="hf-code-body">
+              <div class="hf-line"><span class="hf-attr">.hero</span> {</div>
+              <div class="hf-line hf-line--indent"><span class="hf-tag">background</span>: <span class="hf-str">#001226</span>;</div>
+              <div class="hf-line hf-line--indent"><span class="hf-tag">color</span>: <span class="hf-str">#F0CB46</span>;</div>
+              <div class="hf-line">}</div>
+              <div class="hf-cursor-blink">|</div>
+            </div>
+          </div>
+
+          <!-- Colour palette -->
+          <div class="hf-palette hf-el">
+            <div class="hf-swatch" style="background:#001d3d"></div>
+            <div class="hf-swatch" style="background:#003566"></div>
+            <div class="hf-swatch" style="background:#F0CB46"></div>
+            <div class="hf-swatch" style="background:#F7F0DB"></div>
+            <div class="hf-palette-label">Brand Colours</div>
+          </div>
+
+        </div>
         <div class="section-shell hero-content">
           <!-- EDIT: Update the hero location label here -->
           <div class="eyebrow hero-animate hero-delay-1">Creative Agency &#183; Nairobi, Kenya</div>
@@ -2288,8 +2675,8 @@
 
           <!-- EDIT: Update the hero description here -->
           <p class="hero-description hero-animate hero-delay-5">
-            We design striking websites and memorable print that help businesses in Nairobi
-            and bold brands worldwide show up beautifully and stand out with confidence.
+            We design striking websites and memorable print that help Nairobi businesses
+            and bold brands everywhere show up beautifully and stand out with confidence.
           </p>
 
           <div class="hero-actions hero-animate hero-delay-6">
@@ -2490,7 +2877,7 @@
           <h2 class="section-title centered reveal">Our Work</h2>
           <p class="section-intro reveal reveal-delay-1">A portfolio wall that feels alive. Replace the sample posters below with your own work and the floating showcase effect will carry across automatically.</p>
 
-          <div class="portfolio-tabs reveal reveal-delay-2" role="tablist" aria-label="Portfolio categories">
+          <div class="portfolio-tabs" role="tablist" aria-label="Portfolio categories">
             <button class="tab-button active" type="button" role="tab" aria-selected="true" aria-controls="panel-posters" id="tab-posters" data-target="posters">
               Posters &amp; Print
             </button>
@@ -2600,25 +2987,17 @@
 
           <!-- EDIT: Replace the placeholder social media links below -->
           <div class="social-links reveal reveal-delay-3">
-            <a class="social-link" href="#" aria-label="Instagram">
+            <a class="social-link" href="https://www.instagram.com/e.mwandawiro" target="_blank" rel="noopener noreferrer" aria-label="Instagram — @e.mwandawiro">
               <svg viewBox="0 0 24 24">
                 <rect x="3" y="3" width="18" height="18" rx="5"></rect>
                 <circle cx="12" cy="12" r="4"></circle>
                 <path d="M17.5 6.5H17.51"></path>
               </svg>
             </a>
-            <a class="social-link" href="#" aria-label="TikTok">
+            <a class="social-link" href="https://www.tiktok.com/@by.evansmwandawiro" target="_blank" rel="noopener noreferrer" aria-label="TikTok — @by.evansmwandawiro">
               <svg viewBox="0 0 24 24">
                 <path d="M14 4V14.2C14 16.3 12.3 18 10.2 18C8.5 18 7 16.5 7 14.8C7 13.1 8.5 11.6 10.2 11.6C10.7 11.6 11.2 11.7 11.6 11.9"></path>
                 <path d="M14 4C14.6 5.9 16.4 7.3 18.5 7.3"></path>
-              </svg>
-            </a>
-            <a class="social-link" href="#" aria-label="LinkedIn">
-              <svg viewBox="0 0 24 24">
-                <path d="M8 10V20"></path>
-                <path d="M4 10V20"></path>
-                <path d="M6 6.7V6.71"></path>
-                <path d="M12 20V14.4C12 12.5 13.5 11 15.4 11C17.3 11 18.8 12.5 18.8 14.4V20"></path>
               </svg>
             </a>
           </div>
@@ -2701,11 +3080,11 @@
     // stylish placeholder poster automatically.
     // ============================================================
     const portfolioItems = [
-  { title: "Bday Party 2025", category: "poster", strap: "Event Poster", subtitle: "Birthday / Celebration", accent: "#F0CB46", url: "images/poster-1.png" },
-  { title: "Evans Birthday Invite", category: "poster", strap: "Event Invitation", subtitle: "Birthday / Social", accent: "#CCA000", url: "images/poster-2.png" },
-  { title: "KUCCPS Webinar Flyer", category: "poster", strap: "Education Flyer", subtitle: "University / Application", accent: "#F0CB46", url: "images/poster-3.png" },
-  { title: "Top Achievers Dinner", category: "poster", strap: "Event Poster", subtitle: "Gala / Recognition", accent: "#CCA000", url: "images/poster-4.png" },
-];
+      { title: "Night Market Launch", category: "poster", strap: "Event Poster", subtitle: "Fashion / Culture", accent: "#F0CB46", url: "" },
+      { title: "Brand Story Flyer", category: "poster", strap: "Business Flyer", subtitle: "Retail / Promo", accent: "#CCA000", url: "" },
+      { title: "Studio Social Drop", category: "poster", strap: "Social Graphic", subtitle: "Launch / Awareness", accent: "#F0CB46", url: "" },
+      { title: "Weekend Event Poster", category: "poster", strap: "Event Flyer", subtitle: "Music / Community", accent: "#CCA000", url: "" }
+    ];
 
     const body = document.body;
     const siteHeader = document.getElementById("siteHeader");
@@ -2721,7 +3100,6 @@
     const lightboxClose = document.getElementById("lightboxClose");
     const tabButtons = document.querySelectorAll(".tab-button");
     const portfolioPanels = document.querySelectorAll(".portfolio-panel");
-    const navLinks = document.querySelectorAll(".nav-link");
     const observedSections = ["home", "about", "services", "portfolio", "contact"]
       .map((id) => document.getElementById(id))
       .filter(Boolean);
@@ -2783,19 +3161,26 @@
       });
     }
 
+    const navLinks = document.querySelectorAll(".nav-link");
+
     function setMenuState(isOpen) {
+      if (!mobileMenu || !menuToggle) return;
       mobileMenu.classList.toggle("open", isOpen);
       mobileMenu.setAttribute("aria-hidden", String(!isOpen));
       menuToggle.setAttribute("aria-expanded", String(isOpen));
       body.classList.toggle("menu-open", isOpen);
     }
 
-    menuToggle.addEventListener("click", () => {
-      const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
-      setMenuState(!isOpen);
-    });
+    if (menuToggle) {
+      menuToggle.addEventListener("click", () => {
+        const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
+        setMenuState(!isOpen);
+      });
+    }
 
-    menuClose.addEventListener("click", () => setMenuState(false));
+    if (menuClose) {
+      menuClose.addEventListener("click", () => setMenuState(false));
+    }
 
     document.querySelectorAll("[data-menu-link]").forEach((link) => {
       link.addEventListener("click", () => setMenuState(false));
@@ -2856,13 +3241,13 @@
       }
     }
 
-    lightboxClose.addEventListener("click", closeLightbox);
+    if (lightboxClose) lightboxClose.addEventListener("click", closeLightbox);
 
-    lightbox.addEventListener("click", (event) => {
-      if (event.target === lightbox) {
-        closeLightbox();
-      }
-    });
+    if (lightbox) {
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) closeLightbox();
+      });
+    }
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
@@ -2968,9 +3353,8 @@
     window.addEventListener("scroll", updateActiveNav, { passive: true });
     updateActiveNav();
 
-    const canvas = document.getElementById("heroParticles");
+    const canvas = document.getElementById("heroBg");
     const context = canvas.getContext("2d", { alpha: true });
-    const particleColor = "240,203,70";
     let particles = [];
     let canvasWidth = 0;
     let canvasHeight = 0;
@@ -2983,7 +3367,7 @@
         y: useRandomY ? Math.random() * canvasHeight : canvasHeight + Math.random() * 40,
         size: 0.8 + Math.random() * 1.6,
         speed: 0.15 + Math.random() * 0.4,
-        opacity: 0.12 + Math.random() * 0.1,
+        opacity: 0.1 + Math.random() * 0.1,
         drift: (Math.random() - 0.5) * 0.22,
         wobble: Math.random() * Math.PI * 2
       };
@@ -2994,7 +3378,7 @@
       p.y = canvasHeight + Math.random() * 30;
       p.size = 0.8 + Math.random() * 1.6;
       p.speed = 0.15 + Math.random() * 0.4;
-      p.opacity = 0.12 + Math.random() * 0.1;
+      p.opacity = 0.1 + Math.random() * 0.1;
       p.drift = (Math.random() - 0.5) * 0.22;
       p.wobble = Math.random() * Math.PI * 2;
     }
@@ -3006,53 +3390,89 @@
       canvas.width = canvasWidth * dpr;
       canvas.height = canvasHeight * dpr;
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
-      // Fewer particles: max 48 on desktop, 28 on mobile
       const isMobile = canvasWidth < 768;
-      const particleCount = isMobile ? 28 : Math.min(48, Math.round(canvasWidth / 22));
+      const particleCount = isMobile ? 24 : Math.min(44, Math.round(canvasWidth / 24));
       particles = Array.from({ length: particleCount }, () => createParticle(true));
     }
 
+    function drawGrid() {
+      const spacing = 52;
+      context.strokeStyle = "rgba(240,203,70,0.032)";
+      context.lineWidth = 1;
+      for (let x = 0; x < canvasWidth; x += spacing) {
+        context.beginPath(); context.moveTo(x, 0); context.lineTo(x, canvasHeight); context.stroke();
+      }
+      for (let y = 0; y < canvasHeight; y += spacing) {
+        context.beginPath(); context.moveTo(0, y); context.lineTo(canvasWidth, y); context.stroke();
+      }
+    }
+
+    function drawWaves(time) {
+      const waveCount = 4;
+      for (let w = 0; w < waveCount; w++) {
+        const yBase    = canvasHeight * (0.55 + w * 0.12);
+        const amp      = 18 + w * 8;
+        const freq     = 0.006 - w * 0.001;
+        const speed    = time * 0.0004 + w * 0.7;
+        const alpha    = 0.07 - w * 0.014;
+        const gold     = w % 2 === 0;
+
+        context.beginPath();
+        context.strokeStyle = gold
+          ? `rgba(240,203,70,${alpha})`
+          : `rgba(0,90,160,${alpha + 0.02})`;
+        context.lineWidth = 1.2 - w * 0.2;
+
+        for (let x = 0; x <= canvasWidth; x += 3) {
+          const y = yBase + Math.sin(x * freq + speed) * amp
+                          + Math.sin(x * freq * 2.3 + speed * 1.4) * (amp * 0.35);
+          x === 0 ? context.moveTo(x, y) : context.lineTo(x, y);
+        }
+        context.stroke();
+      }
+    }
+
+    function drawGlow() {
+      const cx = canvasWidth * 0.5, cy = canvasHeight * 0.42;
+      const grad = context.createRadialGradient(cx, cy, 0, cx, cy, canvasWidth * 0.55);
+      grad.addColorStop(0,   "rgba(240,203,70,0.07)");
+      grad.addColorStop(0.5, "rgba(0,53,102,0.04)");
+      grad.addColorStop(1,   "transparent");
+      context.fillStyle = grad;
+      context.fillRect(0, 0, canvasWidth, canvasHeight);
+    }
+
     let lastTime = 0;
-    function animateParticles(time) {
-      if (!isVisible) { rafId = requestAnimationFrame(animateParticles); return; }
-      // Throttle to ~40fps to save CPU
-      if (time - lastTime < 24) { rafId = requestAnimationFrame(animateParticles); return; }
+    function animate(time) {
+      if (!isVisible) { rafId = requestAnimationFrame(animate); return; }
+      if (time - lastTime < 24) { rafId = requestAnimationFrame(animate); return; }
       lastTime = time;
-
       context.clearRect(0, 0, canvasWidth, canvasHeight);
+      drawGrid();
+      drawGlow();
+      drawWaves(time);
       const t = time * 0.0005;
-
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.y -= p.speed;
         p.x += Math.sin(t + p.wobble) * 0.12 + p.drift;
-
-        if (p.y < -8 || p.x < -16 || p.x > canvasWidth + 16) {
-          resetParticle(p);
-          continue;
-        }
-
+        if (p.y < -8 || p.x < -16 || p.x > canvasWidth + 16) { resetParticle(p); continue; }
         context.beginPath();
-        context.fillStyle = `rgba(${particleColor},${p.opacity})`;
+        context.fillStyle = `rgba(240,203,70,${p.opacity})`;
         context.arc(p.x, p.y, p.size, 0, 6.283);
         context.fill();
       }
-
-      rafId = requestAnimationFrame(animateParticles);
+      rafId = requestAnimationFrame(animate);
     }
 
-    // Pause when tab is not visible
-    document.addEventListener("visibilitychange", () => {
-      isVisible = !document.hidden;
-    });
+    document.addEventListener("visibilitychange", () => { isVisible = !document.hidden; });
 
-    // Pause particles when hero is scrolled out of view (big perf win)
     const heroEl = document.getElementById("home");
     if (heroEl && "IntersectionObserver" in window) {
       new IntersectionObserver((entries) => {
         entries.forEach(e => {
           if (e.isIntersecting) {
-            if (!rafId) rafId = requestAnimationFrame(animateParticles);
+            if (!rafId) rafId = requestAnimationFrame(animate);
           } else {
             if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
             context.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -3062,7 +3482,7 @@
     }
 
     resizeCanvas();
-    rafId = requestAnimationFrame(animateParticles);
+    rafId = requestAnimationFrame(animate);
     let resizeTimer;
     window.addEventListener("resize", () => {
       clearTimeout(resizeTimer);
